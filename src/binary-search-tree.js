@@ -1,151 +1,147 @@
-const { NotImplementedError } = require('../extensions/index.js');
+const { NotImplementedError } = require("../extensions/index.js");
 
-const { Node } = require('../extensions/list-tree.js');
+const { Node } = require("../extensions/list-tree.js");
 
 /**
-* Implement simple binary search tree according to task description
-* using Node from extensions
-*/
+ * Implement simple binary search tree according to task description
+ * using Node from extensions
+ */
 class BinarySearchTree {
+    constructor() {
+        this.rootNew = null;
+    }
 
-  constructor () {
-    this.rootNew = null;
-  }
-
-  root() {
-    return this.rootNew ? this.rootNew : null;
-  }
+    root() {
+        return this.rootNew ? this.rootNew : null;
+    }
 
     add(data) {
-      this.rootNew = addWithin(this.rootNew, data);
+        this.rootNew = addWithin(this.rootNew, data);
 
-      function addWithin(node, data) {
-      if (!node) {
-        return new Node(data);
-      }
+        function addWithin(node, data) {
+            if (!node) {
+                return new Node(data);
+            }
 
-      if (node.data === data) {
-        return node;
-      }
+            if (node.data === data) {
+                return node;
+            }
 
-      if (data < node.data) {
-        node.left = addWithin(node.left, data);
-      } else {
-        node.right = addWithin(node.right, data);
-      }
+            if (data < node.data) {
+                node.left = addWithin(node.left, data);
+            } else {
+                node.right = addWithin(node.right, data);
+            }
 
-      return node;
-    }
-  }
-
-  has(data) {
-    return searchWithin(this.rootNew, data);
-
-    function searchWithin(node, data) {
-      if (!node) {
-        return false;
-      }
-
-      if (node.data === data) {
-        return true;
-      }
-
-      return data < node.data ?
-        searchWithin(node.left, data) : 
-        searchWithin(node.right, data);
+            return node;
+        }
     }
 
-  }
+    has(data) {
+        return searchWithin(this.rootNew, data);
 
-  find(data) {
-    return searchWithin(this.rootNew, data);
+        function searchWithin(node, data) {
+            if (!node) {
+                return false;
+            }
 
-    function searchWithin(node, data) {
-      if (!node) {
-        return null;
-      }
+            if (node.data === data) {
+                return true;
+            }
 
-      if (node.data === data) {
-        return node;
-      }
-
-      return data < node.data ?
-        searchWithin(node.left, data) : 
-        searchWithin(node.right, data);
+            return data < node.data
+                ? searchWithin(node.left, data)
+                : searchWithin(node.right, data);
+        }
     }
-  }
 
-  remove(data) {
-    this.rootNew = removeNode(this.rootNew, data);
-    
-    function removeNode(node, data) {
-      if (!node) {
-        return null;
-      }
+    find(data) {
+        return searchWithin(this.rootNew, data);
 
-      if (data < node.data) {
-        node.left = removeNode(node.left, data);
-        return node;
-      } else if (node.data < data) {
-        node.right = removeNode(node.right, data);
-        return node;
-      } else {
+        function searchWithin(node, data) {
+            if (!node) {
+                return null;
+            }
 
-        if (!node.left && !node.right) {
-          return null;
+            if (node.data === data) {
+                return node;
+            }
+
+            return data < node.data
+                ? searchWithin(node.left, data)
+                : searchWithin(node.right, data);
+        }
+    }
+
+    remove(data) {
+        this.rootNew = removeNode(this.rootNew, data);
+
+        function removeNode(node, data) {
+            if (!node) {
+                return null;
+            }
+
+            if (data < node.data) {
+                node.left = removeNode(node.left, data);
+                return node;
+            } else if (node.data < data) {
+                node.right = removeNode(node.right, data);
+                return node;
+            } else {
+                if (!node.left && !node.right) {
+                    return null;
+                }
+
+                if (!node.left) {
+                    node = node.right;
+                    return node;
+                }
+
+                if (!node.right) {
+                    node = node.left;
+                    return node;
+                }
+
+                let minFromRight = node.right;
+                while (minFromRight.left) {
+                    minFromRight = minFromRight.left;
+                }
+                node.data = minFromRight.data;
+
+                node.right = removeNode(node.right, minFromRight.data);
+
+                return node;
+            }
+        }
+    }
+
+    min() {
+        if (!this.rootNew) {
+            return;
         }
 
-        if (!node.left) {
-          node = node.right;
-          return node;
+        let node = this.rootNew;
+        while (node.left) {
+            node = node.left;
         }
 
-        if (!node.right) {
-          node = node.left;
-          return node;
+        return node.data;
+    }
+
+    max() {
+        if (!this.rootNew) {
+            return;
         }
 
-        let minFromRight = node.right;
-        while (minFromRight.left) {
-          minFromRight = minFromRight.left;
+        let node = this.rootNew;
+        while (node.right) {
+            node = node.right;
         }
-        node.data = minFromRight.data;
 
-        node.right = removeNode(node.right, minFromRight.data);
-
-        return node;
-      }
+        return node.data;
     }
-  }
-
-  min() {
-    if (!this.rootNew) {
-      return;
-    }
-
-    let node = this.rootNew;
-    while (node.left) {
-      node = node.left;
-    }
-
-    return node.data;
-
-  }
-
-  max() {
-    if (!this.rootNew) {
-      return;
-    }
-
-    let node = this.rootNew;
-    while (node.right) {
-      node = node.right;
-    }
-
-    return node.data;
-  }
 }
 
 module.exports = {
-  BinarySearchTree
+    BinarySearchTree,
 };
